@@ -1,11 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webpack template</title>
+    <title>Todo App</title>
 </head>
+
 <body>
-    <h1>Hello world !</h1>
+    <div class="todo-app">
+        <div class="sidebar">
+            <div class="sidebar-content">
+                <span class="sidebar-title">Todo App</span>
+                <nav class="sidebar-nav">
+                    <ul class="sidebar-nav-controls">
+                        <li>
+                            <button id="nav-add-task" class="sidebar-button"
+                                type="button">
+                                <span class="icon-wrapper">
+                                    <iconify-icon class="ic-icon"
+                                        icon="ic:baseline-plus"></iconify-icon>
+                                </span>
+                                <span>Add task</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-today" class="sidebar-button"
+                                type="button">
+                                <span class="icon-wrapper">
+                                    <iconify-icon class="ic-icon"
+                                        icon="ic:baseline-today"></iconify-icon>
+                                </span>
+                                <span>Today</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button id="nav-completed" class="sidebar-button"
+                                type="button">
+                                <span class="icon-wrapper">
+                                    <iconify-icon class="ic-icon"
+                                        icon="material-symbols:check-circle-outline"></iconify-icon>
+                                </span>
+                                <span>Completed</span>
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="sidebar-nav-projects">
+                        <div class="sidebar-nav-projects-title">
+                            <span>Projects</span>
+                            <button id="nav-add-project" class="sidebar-button"
+                                type="button">
+                                <span class="icon-wrapper">
+                                    <iconify-icon class="ic-icon"
+                                        icon="ic:baseline-plus"></iconify-icon>
+                                </span>
+                            </button>
+                        </div>
+                        <ul>
+                            <li>
+                                <button class="sidebar-button selected"
+                                    type="button">
+                                    <span class="icon-wrapper">
+                                        <iconify-icon class="ic-icon"
+                                            icon="ph:hash"></iconify-icon>
+                                    </span>
+                                    <span>Project 1</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="sidebar-button" type="button">
+                                    <span class="icon-wrapper">
+                                        <iconify-icon class="ic-icon"
+                                            icon="ph:hash"></iconify-icon>
+                                    </span>
+                                    <span>Project 2</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <footer class="sidebar-footer">
+                    <span>2025</span>
+                    <span>-</span>
+                    <a id="sidebar-github-link"
+                        href="https://github.com/arnaudSanchez1816/odin-todoApp">
+                        <iconify-icon icon="mdi:github" width="32"
+                            height="32"></iconify-icon>
+                    </a>
+                </footer>
+            </div>
+        </div>
+        <main>
+
+        </main>
+    </div>
 </body>
+
 </html>

@@ -1,0 +1,30 @@
+class TodoSection {
+    #title;
+    #tasks = [];
+
+    constructor(title) {
+        this.#title = title;
+    }
+
+    get title() {
+        return this.#title;
+    }
+
+    addTask(todoTask) {
+        if(this.#tasks.includes(todoTask)) {
+            return;
+        }
+
+        this.#tasks.push(todoTask);
+    }
+
+    removeTask(todoTask) {
+        this.#tasks = this.#tasks.filter((element) => element !== todoTask);
+    }
+
+    get tasks() {
+        return [...this.#tasks];
+    }
+}
+
+export default TodoSection;
