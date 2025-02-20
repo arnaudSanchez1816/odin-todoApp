@@ -1,4 +1,4 @@
-import "normalize.css";
-import "./style.css"
+import "modern-normalize";
+import "./template.css"
 
 console.log("Hello world!");
