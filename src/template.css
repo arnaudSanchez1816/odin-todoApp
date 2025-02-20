@@ -4,7 +4,8 @@
 
     --dark-background-color-hover: #f2efed;
 
-    --border-radius-interact-small: 5px;
+    --border-radius-small: 5px;
+    --border-radius-medium: 10px;
     --padding-button-small: 5px;
 
     --highlight-interact-background-color: #ffefe5;
@@ -15,6 +16,19 @@
 
     --content-text-interact-color-idle: #666;
     --content-text-interact-color-hover: #1a1a1a;
+
+    --icon-text-gap:0.8ch;
+
+    --icon-size : 24px;
+
+    --main-side-padding: 32px;
+
+    --card-border : 1px solid rgba(0, 0, 0, 0.12);
+    --card-border-invisible : 1px solid rgba(0, 0, 0, 0);
+    --card-border-hover : 1px solid rgba(0, 0, 0, 0.2);
+    --card-box-shadow-hover : 0 2px 8px 0 rgba(0, 0, 0, .1);
+
+    --ease-in-transition: cubic-bezier(0.4, 0.1, 1, 1);
 }
 
 html,
@@ -29,12 +43,20 @@ body {
     height: 100%;
 }
 
+.ic-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--icon-size);
+    width: var(--icon-size);
+    height: var(--icon-size);
+}
+
 /* Sidebar */
-.todo-app>.sidebar {
+.todo-app>#sidebar {
     background-color: var(--dark-background-color);
     width: 280px;
-    min-width: 210px;
-    max-width: 400px;
+    flex-shrink: 0;
 
     >.sidebar-content {
         padding: 20px 12px;
@@ -87,11 +109,11 @@ body {
 .sidebar-content>.sidebar-nav .sidebar-button {
     display: flex;
     align-items: center;
-    gap: 0.8ch;
+    gap: var(--icon-text-gap);
     font-size: 0.9em;
     width: 100%;
     padding: var(--padding-button-small);
-    border-radius: var(--border-radius-interact-small);
+    border-radius: var(--border-radius-small);
     border: none;
     background-color: var(--dark-background-color);
     cursor: pointer;
@@ -100,20 +122,11 @@ body {
         background-color: var(--dark-background-color-hover);
     }
 
-    >.icon-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
-    }
-
     &.selected {
         background-color: var(--highlight-interact-background-color);
         color: var(--highlight-interact-dark-color);
 
-        .icon-wrapper {
+        .ic-wrapper {
             color: var(--highlight-interact-light-color);
         }
     }
@@ -123,7 +136,7 @@ body {
     color: var(--highlight-interact-dark-color);
     font-weight: bold;
 
-    >.icon-wrapper {
+    >.ic-wrapper {
         background-color: var(--highlight-interact-light-color);
         border-radius: 50%;
 
@@ -151,4 +164,12 @@ body {
         justify-content: center;
         align-items: center;
     }
+}
+
+/* Main */
+
+.todo-app > #main-content {
+    width: 100%;
+    color: var(--content-text-color);
+    background-color: var(--white-background-color);
 }
