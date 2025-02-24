@@ -1,3 +1,6 @@
+import Priorities from "./todoPriorities";
+import TodoTask from "./todoTask";
+
 class TodoSection {
     #title;
     #tasks = [];
@@ -10,15 +13,22 @@ class TodoSection {
         return this.#title;
     }
 
-    addTask(todoTask) {
-        if(this.#tasks.includes(todoTask)) {
-            return;
-        }
+    get tasksCount() {
+        return this.#tasks.length;
+    }
 
+    #addTask(todoTask) {
         this.#tasks.push(todoTask);
     }
 
-    removeTask(todoTask) {
+    addTask(title, description, dueDate) {
+        const task = new TodoTask(title, description, dueDate, Priorities.Normal);
+        this.#addTask(task);
+
+        return task;
+    }
+
+    #removeTask(todoTask) {
         this.#tasks = this.#tasks.filter((element) => element !== todoTask);
     }
 

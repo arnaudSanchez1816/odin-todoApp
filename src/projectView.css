@@ -23,13 +23,13 @@
 }
 
 .main-content-project>.project-content {
-    overflow: scroll;
+    overflow-x: scroll;
 }
 
 .main-content-project>.project-content>.project-title-container {
     --edit-padding: 8px;
 
-    margin: 4px var(--main-side-padding);
+    margin: 8px var(--main-side-padding);
 
     >.project-title-edit {
         padding: var(--edit-padding);
@@ -49,7 +49,6 @@
     flex-flow: row nowrap;
     overflow-x: auto;
     overscroll-behavior-x: none;
-    height: 100%;
     width: 100%;
 
     >.project-add-section-container {
@@ -192,7 +191,7 @@
         }
 
         .task-complete-check {
-            font-size: 0.7em;
+            font-size: 1em;
             opacity: 0;
             transition: opacity 150ms var(--ease-in-transition);
 

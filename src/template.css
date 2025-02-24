@@ -201,3 +201,7 @@ body {
         font-size: calc(var(--icon-size) * 0.9);
     }
 }
+
+.invisible {
+    display: none !important;
+}

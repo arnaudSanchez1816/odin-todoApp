@@ -1,8 +1,9 @@
 import "modern-normalize";
 import "./template.css"
 import "iconify-icon";
-import displayProject from "./projectView";
+import { createDemoProject } from "./todoApp.js";
+import displayProject from "./projectView.js";
 
-console.log("Hello world!");
+const demoProject = createDemoProject();
 
-displayProject();
+displayProject(demoProject);
