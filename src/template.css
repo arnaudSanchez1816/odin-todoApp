@@ -13,6 +13,8 @@
     --highlight-interact-dark-color: #c0392b;
 
     --content-text-color: #202020;
+    --content-sub-text-color: #666;
+    --content-details-text-color: #808080;
 
     --content-text-interact-color-idle: #666;
     --content-text-interact-color-hover: #1a1a1a;
@@ -41,15 +43,6 @@ body {
     display: flex;
     flex-flow: row nowrap;
     height: 100%;
-}
-
-.ic-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: var(--icon-size);
-    width: var(--icon-size);
-    height: var(--icon-size);
 }
 
 /* Sidebar */
@@ -172,4 +165,39 @@ body {
     width: 100%;
     color: var(--content-text-color);
     background-color: var(--white-background-color);
+}
+
+/* Components */
+
+.ic-button {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--icon-text-gap);
+    padding: var(--padding-button-small);
+    border-radius: var(--border-radius-small);
+    border: none;
+    cursor: pointer;
+    background-color: inherit;
+
+    &:hover {
+        background-color: var(--dark-background-color-hover);
+    }
+}
+
+.ic-wrapper {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--icon-size);
+    width: fit-content;
+    height: fit-content;
+}
+
+.edit-button {
+    font-size: 0.9em;
+    
+    >.ic-wrapper {
+        font-size: calc(var(--icon-size) * 0.9);
+    }
 }
