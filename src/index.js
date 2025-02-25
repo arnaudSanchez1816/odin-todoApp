@@ -1,9 +1,11 @@
 import "modern-normalize";
 import "./template.css"
-import "iconify-icon";
-import { createDemoProject } from "./todoApp.js";
+import todoApp from "./todoApp.js";
 import displayProject from "./projectView.js";
+import OverlayView from "./todoOverlayModal.js";
+import "./todoSidebar.js";
 
-const demoProject = createDemoProject();
+const projects = todoApp.getProjects();
+const currentProject = projects[0];
 
-displayProject(demoProject);
+displayProject(currentProject);

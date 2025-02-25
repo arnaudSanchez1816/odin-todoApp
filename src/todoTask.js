@@ -1,12 +1,16 @@
 import Priorities from "./todoPriorities";
+import EventEmitter from "events";
 
 class TodoTask {
     #title;
     #description = null;
     #date = null;
     #priority;
+    #taskEvents;
 
     constructor(title, description = null, date = null, priority = Priorities.Normal) {
+        this.#taskEvents = new EventEmitter();
+
         this.title = title;
         this.description = description;
         this.date = date;
@@ -21,6 +25,7 @@ class TodoTask {
         }
 
         this.#title = newTitle;
+        this.#taskEvents.emit(TodoTask.titleChanged, this.#title);
     }
 
     get title() {
@@ -35,6 +40,7 @@ class TodoTask {
         }
 
         this.#description = newDescription;
+        this.#taskEvents.emit(TodoTask.descriptionChanged, this.#description);
     }
 
     get description() {
@@ -47,6 +53,8 @@ class TodoTask {
         }
 
         this.#date = newDate;
+
+        this.#taskEvents.emit(TodoTask.dateChanged, this.#date);
     }
 
     get date() {
@@ -59,11 +67,49 @@ class TodoTask {
         }
 
         this.#priority = newPrio;
+
+        this.#taskEvents.emit(TodoTask.priorityChanged, this.#priority);
     }
 
     get priority() {
         return this.#priority;
     }
+
+    subscribeToPropertyChanged(property, func) {
+        this.#taskEvents.on(property, func);
+    }
+
+    unsubscribeToPropertyChanged(property, func) {
+        this.#taskEvents.removeListener(property, func);
+    }
 }
+
+Object.defineProperty(TodoTask, 'priorityChanged', {
+    value: "priorityChanged",
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
+
+Object.defineProperty(TodoTask, 'dateChanged', {
+    value: "dateChanged",
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
+
+Object.defineProperty(TodoTask, 'descriptionChanged', {
+    value: "descriptionChanged",
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
+
+Object.defineProperty(TodoTask, 'titleChanged', {
+    value: "titleChanged",
+    writable : false,
+    enumerable : true,
+    configurable : false
+});
 
 export default TodoTask;

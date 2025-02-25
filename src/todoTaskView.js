@@ -1,7 +1,6 @@
 import TodoTask from "./todoTask";
 import { createIconButton, createIconifyIcon, Icons } from "./todoAppComponents";
 import { format, formatDistance, formatRelative } from 'date-fns'
-import { formatRelativeWithOptions } from "date-fns/fp";
 
 function createTaskView(task) {
     const taskView = document.createElement("div");

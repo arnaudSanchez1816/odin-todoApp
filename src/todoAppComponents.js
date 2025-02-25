@@ -1,9 +1,12 @@
+import "iconify-icon";
+
 const Icons = Object.freeze({
     Edit: "material-symbols:edit-square-outline",
     Plus: "ic:baseline-plus",
     Calendar: "mdi:calendar-blank-outline",
     Circle: "material-symbols:circle-outline",
-    Check: "material-symbols:check-rounded"
+    Check: "material-symbols:check-rounded",
+    Close: "material-symbols:close"
 });
 
 function createIconButton(icon, text = "") {

@@ -1,10 +1,15 @@
 import TodoProject from "./todoProject";
 import { addDays } from "date-fns";
+import EventEmitter from "events";
+import { loadProjects, saveProjects } from "./todoAppSerializer";
 
-const projects = [];
+const projects = loadProjects();
+const appEvents = new EventEmitter();
 
-projects.push(new TodoProject("Test project"));
-
+if(projects.length === 0) {
+    const demoProject = createDemoProject();
+    projects.push(demoProject);
+}
 
 function createDemoProject() {
     const demoProject = new TodoProject("Demo project");
@@ -25,4 +30,21 @@ function createDemoProject() {
     return demoProject;
 }
 
-export { createDemoProject }
+function getProjects() {
+    return [...projects];
+}
+
+function addProject(title) {
+    const project = new TodoProject(title);
+
+    projects.push(project);
+
+    return project;
+}
+
+const todoApp = {
+    getProjects,
+    addProject
+};
+
+export default todoApp;
