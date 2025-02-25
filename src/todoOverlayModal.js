@@ -1,5 +1,6 @@
 import "./overlayModal.css"
 import { createIconButton, Icons } from "./todoAppComponents";
+import TodoProject from "./todoProject";
 
 class OverlayModal {
     #overlay;
@@ -172,4 +173,92 @@ class CreateProjectModal extends OverlayModal {
     }
 }
 
-export { CreateProjectModal };
+class EditProjectModal extends OverlayModal{
+    #formId = "edit-project-form";
+    #projectEditedCallback;
+    #project;
+
+    /**
+     * 
+     * @param {TodoProject} project 
+     */
+    constructor(project) {
+        super("Edit Project");
+        this.#project = project;
+    }
+
+    createContent() {
+        const form = document.createElement("form");
+        form.id = this.#formId;
+        form.classList = ["edit-project-form"];
+        const item = document.createElement("div");
+        item.classList = ["form-item"];
+
+        const label = document.createElement("label");
+        label.htmlFor = "edit-project-form-title";
+        label.textContent = "Name";
+        const titleInput = document.createElement("input");
+        titleInput.type = "text";
+        titleInput.name = "project-title";
+        titleInput.id = label.htmlFor;
+        titleInput.maxLength = 120;
+        titleInput.required = true;
+        titleInput.value = this.#project.title;
+
+        item.appendChild(label);
+        item.appendChild(titleInput);
+        form.appendChild(item);
+
+        const formSubmittedCb = (event) => {
+            form.removeEventListener("submit", formSubmittedCb);
+            this.#onEditProjectFormSubmitted(event);
+            this.hide();
+        };
+        form.addEventListener("submit", formSubmittedCb);
+
+        return form;
+    }
+
+    createFooter() {
+        const container = document.createElement("div");
+        container.classList = "form-controls";
+
+        const submitButton = document.createElement("button");
+        submitButton.textContent = "Edit";
+        submitButton.type = "submit";
+        submitButton.classList.add("form-submit-button");
+        submitButton.setAttribute("form", this.#formId);
+
+        container.appendChild(submitButton);
+
+        return container;
+    }
+
+    /**
+     * 
+     * @param {(title : string) => void} callback 
+     */
+    projectEdited(callback) {
+        this.#projectEditedCallback = callback;
+    }
+
+    /**
+     * 
+     * @param {Event} event 
+     */
+    #onEditProjectFormSubmitted(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const projectEditedData = {
+            title : formData.get("project-title").valueOf()
+        };
+
+        if(this.#projectEditedCallback) {
+            this.#projectEditedCallback(projectEditedData);
+        }
+    }
+}
+
+export { CreateProjectModal, EditProjectModal };

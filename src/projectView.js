@@ -1,6 +1,7 @@
 import "./projectView.css"
 import { createIconButton, Icons } from "./todoAppComponents";
 import createSectionView from "./todoSectionView";
+import { EditProjectModal } from "./todoOverlayModal";
 
 function displayProject(project) {
     const mainContent = document.querySelector("#main-content");
@@ -27,7 +28,12 @@ function createProjectHeaderMarkup(project) {
     editProjectButton.id = "project-header-edit";
     editProjectButton.classList.add("edit-button");
     editProjectButton.addEventListener("click", (event) => {
-        console.log(project.title + ": Edit project");
+        const editProjectModal = new EditProjectModal(project);
+        editProjectModal.projectEdited(({title}) => {
+            project.title = title;
+            displayProject(project);
+        });
+        editProjectModal.show();
     })
 
     header.appendChild(editProjectButton);
