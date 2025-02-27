@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch localhost",
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "url": "http://localhost:8080/",
+            "webRoot": "${workspaceFolder}/src",
+            "timeout": 90000,
+            "tmpDir": "${workspaceFolder}/.temp",
+            "pathMappings": [
+                {
+                    "url": "webpack:///src/",
+                    "path": "${workspaceFolder}/src/"
+                },
+                {
+                    "url": "webpack-internal:///src/",
+                    "path": "${workspaceFolder}/src/"
+                }
+            ]
+        }
+    ]
+}
