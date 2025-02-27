@@ -7,7 +7,7 @@
             "request": "launch",
             "reAttach": true,
             "url": "http://localhost:8080/",
-            "webRoot": "${workspaceFolder}/src",
+            "webRoot": "${workspaceFolder}",
             "timeout": 90000,
             "tmpDir": "${workspaceFolder}/.temp",
             "pathMappings": [
