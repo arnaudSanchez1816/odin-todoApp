@@ -1,20 +1,30 @@
 import Priorities from "./todoPriorities";
 import EventEmitter from "events";
 
+const TASK_CHANGED_EVENT = "taskChanged";
+
 class TodoTask {
+    #ownerSection;
     #title;
     #description = null;
     #date = null;
     #priority;
-    #taskEvents;
+    #done;
+    #taskChangedEmitter;
 
-    constructor(title, description = null, date = null, priority = Priorities.Normal) {
-        this.#taskEvents = new EventEmitter();
+    constructor(section, title, description = null, date = null, priority = Priorities.Normal) {
+        this.#taskChangedEmitter = new EventEmitter();
 
+        this.#ownerSection = section;
         this.title = title;
         this.description = description;
         this.date = date;
         this.priority = priority;
+        this.#done = false;
+    }
+
+    deleteTask() {
+        this.#ownerSection.removeTask(this);
     }
 
     set title(newTitle) {
@@ -25,7 +35,7 @@ class TodoTask {
         }
 
         this.#title = newTitle;
-        this.#taskEvents.emit(TodoTask.titleChanged, this.#title);
+        this.#triggerTaskChangedEvent();
     }
 
     get title() {
@@ -40,7 +50,7 @@ class TodoTask {
         }
 
         this.#description = newDescription;
-        this.#taskEvents.emit(TodoTask.descriptionChanged, this.#description);
+        this.#triggerTaskChangedEvent();
     }
 
     get description() {
@@ -53,8 +63,7 @@ class TodoTask {
         }
 
         this.#date = newDate;
-
-        this.#taskEvents.emit(TodoTask.dateChanged, this.#date);
+        this.#triggerTaskChangedEvent();
     }
 
     get date() {
@@ -67,49 +76,37 @@ class TodoTask {
         }
 
         this.#priority = newPrio;
-
-        this.#taskEvents.emit(TodoTask.priorityChanged, this.#priority);
+        this.#triggerTaskChangedEvent();
     }
 
     get priority() {
         return this.#priority;
     }
 
-    subscribeToPropertyChanged(property, func) {
-        this.#taskEvents.on(property, func);
+    set done(value) {
+        if((value instanceof Boolean) === false) {
+            throw new Error("Only bool values accepted");
+        }
+
+        this.#done = value;
+        this.#triggerTaskChangedEvent();
     }
 
-    unsubscribeToPropertyChanged(property, func) {
-        this.#taskEvents.removeListener(property, func);
+    get done() {
+        return this.#done;
+    }
+
+    addTaskChangedListener(func) {
+        this.#taskChangedEmitter.on(TASK_CHANGED_EVENT, func);
+    }
+
+    removeTaskChangedListener(func) {
+        this.#taskChangedEmitter.removeListener(TASK_CHANGED_EVENT, func);
+    }
+
+    #triggerTaskChangedEvent() {
+        this.#taskChangedEmitter.emit(TASK_CHANGED_EVENT, this);
     }
 }
-
-Object.defineProperty(TodoTask, 'priorityChanged', {
-    value: "priorityChanged",
-    writable : false,
-    enumerable : true,
-    configurable : false
-});
-
-Object.defineProperty(TodoTask, 'dateChanged', {
-    value: "dateChanged",
-    writable : false,
-    enumerable : true,
-    configurable : false
-});
-
-Object.defineProperty(TodoTask, 'descriptionChanged', {
-    value: "descriptionChanged",
-    writable : false,
-    enumerable : true,
-    configurable : false
-});
-
-Object.defineProperty(TodoTask, 'titleChanged', {
-    value: "titleChanged",
-    writable : false,
-    enumerable : true,
-    configurable : false
-});
 
 export default TodoTask;

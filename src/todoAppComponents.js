@@ -6,7 +6,8 @@ const Icons = Object.freeze({
     Calendar: "mdi:calendar-blank-outline",
     Circle: "material-symbols:circle-outline",
     Check: "material-symbols:check-rounded",
-    Close: "material-symbols:close"
+    Close: "material-symbols:close",
+    Hash: "ph:hash"
 });
 
 function createIconButton(icon, text = "") {

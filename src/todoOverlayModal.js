@@ -1,5 +1,7 @@
+import createDomEventListener from "./domEventListener";
 import "./overlayModal.css"
 import { createIconButton, Icons } from "./todoAppComponents";
+import Priorities from "./todoPriorities";
 import TodoProject from "./todoProject";
 
 class OverlayModal {
@@ -261,4 +263,202 @@ class EditProjectModal extends OverlayModal{
     }
 }
 
-export { CreateProjectModal, EditProjectModal };
+class EditTaskModal extends OverlayModal{
+    #formId = "edit-task-form";
+    #task;
+    #taskEditedCallback;
+    #taskDeletedCallback;
+    #eventListeners;
+
+    constructor(task) {
+        super("Edit task");
+        this.#eventListeners = [];
+        this.#task = task;
+    }
+
+    hide() {
+        super.hide();
+        this.#eventListeners.forEach((item) => item.dispose());
+        this.#eventListeners = [];
+    }
+
+    createContent() {
+        const form = document.createElement("form");
+        form.id = this.#formId;
+        form.classList = ["edit-task-form"];
+
+        const titleItem = this.#createTitleFormItem();
+        const descriptionItem = this.#createDescriptionFormItem();
+        const dueDateItem = this.#createDateFormItem();
+        const priorityItem = this.#createPriorityFormItem();
+
+        form.appendChild(titleItem);
+        form.appendChild(descriptionItem);
+        form.appendChild(dueDateItem);
+        form.appendChild(priorityItem);
+
+        const eventListener = createDomEventListener(form, "submit", this.#onEditTaskFormSubmitted.bind(this));
+        this.#eventListeners.push(eventListener);
+
+        return form;
+    }
+
+    #createFormItemContainer() {
+        const item = document.createElement("div");
+        item.classList = ["form-item"];
+
+        return item;
+    }
+
+    #createTitleFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const titleLabel = document.createElement("label");
+        titleLabel.htmlFor = "edit-task-form-title";
+        titleLabel.textContent = "Name";
+        const titleInput = document.createElement("input");
+        titleInput.type = "text";
+        titleInput.name = "task-title";
+        titleInput.id = titleLabel.htmlFor;
+        titleInput.maxLength = 120;
+        titleInput.required = true;
+        titleInput.value = this.#task.title;
+        item.appendChild(titleLabel);
+        item.appendChild(titleInput);
+
+        return item;
+    }
+
+    #createDescriptionFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const descriptionLabel = document.createElement("label");
+        descriptionLabel.htmlFor = "edit-task-form-description";
+        descriptionLabel.textContent = "Description";
+        const descriptionTextArea = document.createElement("textarea");
+        descriptionTextArea.name = "task-description";
+        descriptionTextArea.id = descriptionLabel.htmlFor;
+        descriptionTextArea.maxLength = 256;
+        descriptionTextArea.value = this.#task.description;
+
+        item.appendChild(descriptionLabel);
+        item.appendChild(descriptionTextArea);
+        return item;
+    }
+
+    #createDateFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const dueDateLabel = document.createElement("label");
+        dueDateLabel.htmlFor = "edit-task-form-date";
+        dueDateLabel.textContent = "Due date";
+        const dueDateInput = document.createElement("input");
+        dueDateInput.type = "date";
+        dueDateInput.name = "task-date";
+        dueDateInput.id = dueDateLabel.htmlFor;
+        dueDateInput.valueAsDate = this.#task.date;
+
+        item.appendChild(dueDateLabel);
+        item.appendChild(dueDateInput);
+
+        return item;
+    }
+
+    #createPriorityFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const priorityLabel = document.createElement("label");
+        priorityLabel.htmlFor = "edit-task-form-priority";
+        priorityLabel.textContent = "Priority";
+        const prioritySelect = document.createElement("select");
+        prioritySelect.name = "task-priority";
+        prioritySelect.id = priorityLabel.htmlFor;
+
+        const priorityValues = Priorities.values();
+        for (const priority of priorityValues) {
+            const priorityOption = document.createElement("option");
+            priorityOption.value = priority.value;
+            priorityOption.textContent = priority.name;
+
+            if(this.#task.priority === priority) {
+                priorityOption.selected = true;
+            }
+
+            prioritySelect.appendChild(priorityOption);
+        }
+
+        item.appendChild(priorityLabel);
+        item.appendChild(prioritySelect);
+
+        return item;
+    }
+
+    createFooter() {
+        const container = document.createElement("div");
+        container.classList = "form-controls";
+
+        const submitButton = document.createElement("button");
+        submitButton.textContent = "Edit";
+        submitButton.type = "submit";
+        submitButton.classList.add("form-submit-button");
+        submitButton.setAttribute("form", this.#formId);
+
+        const deleteTaskButton = document.createElement("button");
+        deleteTaskButton.textContent = "Delete";
+        deleteTaskButton.type = "button";
+        deleteTaskButton.classList.add("delete-button");
+
+        const eventListener = createDomEventListener(deleteTaskButton, "click", this.#onDeleteTask.bind(this));
+        this.#eventListeners.push(eventListener);
+
+        container.appendChild(deleteTaskButton);
+        container.appendChild(submitButton);
+
+        return container;
+    }
+
+    taskEdited(callback) {
+        this.#taskEditedCallback = callback;
+    }
+
+    taskDeleted(callback) {
+        this.#taskDeletedCallback = callback;
+    }
+
+    /**
+     * 
+     * @param {Event} event 
+     */
+    #onEditTaskFormSubmitted(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        let dueDate = null;
+        if(formData.get("task-date")) {
+            dueDate = new Date(formData.get("task-date").valueOf());
+        }
+        const taskEditedData = {
+            title : formData.get("task-title").valueOf(),
+            description: formData.get("task-description").valueOf(),
+            dueDate: dueDate,
+            priority: Priorities.fromValue(formData.get("task-priority").valueOf())
+        };
+
+        if(this.#taskEditedCallback) {
+            this.#taskEditedCallback(taskEditedData);
+        }
+
+        this.hide();
+    }
+
+    #onDeleteTask(event) {
+        if(this.#taskDeletedCallback) {
+            this.#taskDeletedCallback(this.#task);
+        }
+
+        this.hide();
+    }
+}
+
+export { CreateProjectModal, EditProjectModal, EditTaskModal };

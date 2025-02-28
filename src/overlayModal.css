@@ -59,17 +59,34 @@ body > .overlay {
 
 .form-controls {
     display: flex;
+    gap: 20px;
     height: 100%;
     justify-content: flex-end;
     align-items: center;
 }
 
-.form-submit-button {
+.form-submit-button,
+.delete-button {
     cursor: pointer;
     font-weight: bold;
-    color: #fff;
     border: none;
     border-radius: var(--border-radius-small);
     padding: var(--padding-button-small) var(--padding-button-medium);
+}
+
+.form-submit-button {
+    color: #fff;
     background-color: var(--highlight-interact-light-color);
+    &:hover {
+        background-color: var(--highlight-interact-dark-color);
+    }
+}
+
+.delete-button {
+    color: var(--content-text-color);
+    background-color: var(--dark-background-color);
+
+    &:hover {
+        background-color: var(--dark-background-color-hover);
+    }
 }

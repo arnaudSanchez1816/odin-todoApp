@@ -22,13 +22,13 @@ class TodoSection {
     }
 
     addTask(title, description, dueDate) {
-        const task = new TodoTask(title, description, dueDate, Priorities.Normal);
+        const task = new TodoTask(this, title, description, dueDate, Priorities.Normal);
         this.#addTask(task);
 
         return task;
     }
 
-    #removeTask(todoTask) {
+    removeTask(todoTask) {
         this.#tasks = this.#tasks.filter((element) => element !== todoTask);
     }
 

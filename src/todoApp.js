@@ -1,50 +1,62 @@
-import TodoProject from "./todoProject";
-import { addDays } from "date-fns";
-import EventEmitter from "events";
-import { loadProjects, saveProjects } from "./todoAppSerializer";
+import todoData from "./todoAppData.js";
+import sidebar from "./todoSidebar.js";
+import { CreateProjectModal } from "./todoOverlayModal.js";
+import { ProjectView } from "./todoProjectView.js";
 
-const projects = loadProjects();
-const appEvents = new EventEmitter();
+let currentContent = null;
+let init = false;
+const mainContent = document.querySelector("#main-content");
 
-if(projects.length === 0) {
-    const demoProject = createDemoProject();
-    projects.push(demoProject);
+function initApp() {
+    if(init) {
+        throw new Error("Website already initialized !");
+    }
+
+    init = true;
+    const projects = todoData.getProjects();
+    sidebar.initSidebar(onSidebarAddProject, onSidebarProjectSelected);
+
+    const initialProject = projects.length > 0 ? projects[0] : null;
+    displayProject(initialProject);
 }
 
-function createDemoProject() {
-    const demoProject = new TodoProject("Demo project");
-
-    const codingSection = demoProject.createSection("Coding");
-    const workoutSection = demoProject.createSection("Workout");
-
-    const todoAppTask = codingSection.addTask("Todo app", "Finish the todo app project");
-    const odinTask = codingSection.addTask("Odin", "Continue odin project course");
-
-    const workoutTask = workoutSection.addTask("Go back to the gym");
-    let workoutDueDate = new Date(Date.now());
-    workoutDueDate = addDays(workoutDueDate, 3);
-    workoutTask.date = workoutDueDate;
-
-    projects.push(demoProject);
-
-    return demoProject;
+function displayProject(project) {
+    const projectView = new ProjectView(project);
+    setContent(projectView);
+    sidebar.setActiveProject(project);
 }
 
-function getProjects() {
-    return [...projects];
+function setContent(contentToDisplay) {
+    if(currentContent && currentContent.dispose) {
+        currentContent.dispose();
+    }
+
+    if (mainContent) {
+        // Clear main
+        mainContent.innerHTML = "";
+    }
+
+    mainContent.appendChild(contentToDisplay.domElement);
+    currentContent = contentToDisplay;
 }
 
-function addProject(title) {
-    const project = new TodoProject(title);
+function onSidebarAddProject() {
+    // Show add project modal
+    const addProjectModal = new CreateProjectModal();
+    addProjectModal.projectCreated(({ title }) => {
+        const project = todoData.addProject(title);
+        displayProject(project);
+    });
 
-    projects.push(project);
+    addProjectModal.show();
+}
 
-    return project;
+function onSidebarProjectSelected(project) {
+    displayProject(project);
 }
 
 const todoApp = {
-    getProjects,
-    addProject
+    initApp
 };
 
 export default todoApp;
