@@ -19,6 +19,10 @@ class TaskView {
         this.#task.addTaskChangedListener(this.#onTaskChanged);
     }
 
+    get task() {
+        return this.#task;
+    }
+
     get domElement() {
         return this.#domElement;
     }

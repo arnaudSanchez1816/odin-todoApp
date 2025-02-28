@@ -461,4 +461,178 @@ class EditTaskModal extends OverlayModal{
     }
 }
 
-export { CreateProjectModal, EditProjectModal, EditTaskModal };
+class CreateTaskModal extends OverlayModal{
+    #formId = "add-task-form";
+    #task;
+    #taskCreatedCallback;
+    #eventListeners;
+
+    constructor(task) {
+        super("Add task");
+        this.#eventListeners = [];
+        this.#task = task;
+    }
+
+    hide() {
+        super.hide();
+        this.#eventListeners.forEach((item) => item.dispose());
+        this.#eventListeners = [];
+    }
+
+    createContent() {
+        const form = document.createElement("form");
+        form.id = this.#formId;
+        form.classList = ["add-task-form"];
+
+        const titleItem = this.#createTitleFormItem();
+        const descriptionItem = this.#createDescriptionFormItem();
+        const dueDateItem = this.#createDateFormItem();
+        const priorityItem = this.#createPriorityFormItem();
+
+        form.appendChild(titleItem);
+        form.appendChild(descriptionItem);
+        form.appendChild(dueDateItem);
+        form.appendChild(priorityItem);
+
+        const eventListener = createDomEventListener(form, "submit", this.#onAddTaskFormSubmitted.bind(this));
+        this.#eventListeners.push(eventListener);
+
+        return form;
+    }
+
+    #createFormItemContainer() {
+        const item = document.createElement("div");
+        item.classList = ["form-item"];
+
+        return item;
+    }
+
+    #createTitleFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const titleLabel = document.createElement("label");
+        titleLabel.htmlFor = "add-task-form-title";
+        titleLabel.textContent = "Name";
+        const titleInput = document.createElement("input");
+        titleInput.type = "text";
+        titleInput.name = "task-title";
+        titleInput.id = titleLabel.htmlFor;
+        titleInput.maxLength = 120;
+        titleInput.required = true;
+        item.appendChild(titleLabel);
+        item.appendChild(titleInput);
+
+        return item;
+    }
+
+    #createDescriptionFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const descriptionLabel = document.createElement("label");
+        descriptionLabel.htmlFor = "add-task-form-description";
+        descriptionLabel.textContent = "Description";
+        const descriptionTextArea = document.createElement("textarea");
+        descriptionTextArea.name = "task-description";
+        descriptionTextArea.id = descriptionLabel.htmlFor;
+        descriptionTextArea.maxLength = 256;
+
+        item.appendChild(descriptionLabel);
+        item.appendChild(descriptionTextArea);
+        return item;
+    }
+
+    #createDateFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const dueDateLabel = document.createElement("label");
+        dueDateLabel.htmlFor = "edit-task-form-date";
+        dueDateLabel.textContent = "Due date";
+        const dueDateInput = document.createElement("input");
+        dueDateInput.type = "date";
+        dueDateInput.name = "task-date";
+        dueDateInput.id = dueDateLabel.htmlFor;
+        dueDateInput.valueAsDate = null;
+
+        item.appendChild(dueDateLabel);
+        item.appendChild(dueDateInput);
+
+        return item;
+    }
+
+    #createPriorityFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const priorityLabel = document.createElement("label");
+        priorityLabel.htmlFor = "edit-task-form-priority";
+        priorityLabel.textContent = "Priority";
+        const prioritySelect = document.createElement("select");
+        prioritySelect.name = "task-priority";
+        prioritySelect.id = priorityLabel.htmlFor;
+
+        const priorityValues = Priorities.values();
+        for (const priority of priorityValues) {
+            const priorityOption = document.createElement("option");
+            priorityOption.value = priority.value;
+            priorityOption.textContent = priority.name;
+
+            if(priority === Priorities.Lowest) {
+                priorityOption.selected = true;
+            }
+
+            prioritySelect.appendChild(priorityOption);
+        }
+
+        item.appendChild(priorityLabel);
+        item.appendChild(prioritySelect);
+
+        return item;
+    }
+
+    createFooter() {
+        const container = document.createElement("div");
+        container.classList = "form-controls";
+
+        const submitButton = document.createElement("button");
+        submitButton.textContent = "Add";
+        submitButton.type = "submit";
+        submitButton.classList.add("form-submit-button");
+        submitButton.setAttribute("form", this.#formId);
+
+        container.appendChild(submitButton);
+
+        return container;
+    }
+
+    taskCreated(callback) {
+        this.#taskCreatedCallback = callback;
+    }
+
+    /**
+     * 
+     * @param {Event} event 
+     */
+    #onAddTaskFormSubmitted(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        let dueDate = null;
+        if(formData.get("task-date")) {
+            dueDate = new Date(formData.get("task-date").valueOf());
+        }
+        const taskCreatedData = {
+            title : formData.get("task-title").valueOf(),
+            description: formData.get("task-description").valueOf(),
+            dueDate: dueDate,
+            priority: Priorities.fromValue(formData.get("task-priority").valueOf())
+        };
+
+        if(this.#taskCreatedCallback) {
+            this.#taskCreatedCallback(taskCreatedData);
+        }
+
+        this.hide();
+    }
+}
+
+export { CreateProjectModal, EditProjectModal, CreateTaskModal, EditTaskModal };

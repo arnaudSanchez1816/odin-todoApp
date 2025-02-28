@@ -1,9 +1,13 @@
 import Priorities from "./todoPriorities";
 import EventEmitter from "events";
+import TodoSection from "./todoSection";
 
 const TASK_CHANGED_EVENT = "taskChanged";
 
 class TodoTask {
+    /**
+     * @type {TodoSection}
+     */
     #ownerSection;
     #title;
     #description = null;
@@ -20,7 +24,7 @@ class TodoTask {
         this.description = description;
         this.date = date;
         this.priority = priority;
-        this.#done = false;
+        this.done = false;
     }
 
     deleteTask() {
