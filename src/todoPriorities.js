@@ -6,7 +6,7 @@
 const Priorities = Object.freeze({
     Lowest: {value: -2, name: "Lowest"},
     Low: {value: -1, name: "Low"},
-    Normal: {value: 0, name: "Normal"},
+    Medium: {value: 0, name: "Medium"},
     High: {value: 1, name: "High"},
     Highest: {value: 2, name: "Highest"},
     values: function() {

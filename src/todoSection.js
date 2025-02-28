@@ -21,8 +21,8 @@ class TodoSection {
         this.#tasks.push(todoTask);
     }
 
-    addTask(title, description, dueDate) {
-        const task = new TodoTask(this, title, description, dueDate, Priorities.Normal);
+    addTask(title, description, dueDate = null, priority = Priorities.Lowest) {
+        const task = new TodoTask(this, title, description, dueDate, priority);
         this.#addTask(task);
 
         return task;

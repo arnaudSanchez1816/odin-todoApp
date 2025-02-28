@@ -84,7 +84,7 @@ class TodoTask {
     }
 
     set done(value) {
-        if((value instanceof Boolean) === false) {
+        if((typeof value === "boolean") === false) {
             throw new Error("Only bool values accepted");
         }
 

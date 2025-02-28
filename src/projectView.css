@@ -185,6 +185,7 @@
         background-color: inherit;
         justify-items: center;
         align-items: center;
+        color: var(--lowest-priority-color);
 
         .ic-wrapper {
             grid-area: 1 / 1;
@@ -198,8 +199,33 @@
             &:hover {
                 opacity: 1;
             }
+
+            &.done {
+                transition: opacity 150ms var(--ease-in-transition);
+                opacity: 1;
+            }
         }
     }
+}
+
+.section-task[data-priority="Lowest"]>.task-complete-button-container>.task-complete-button {
+    color: var(--lowest-priority-color);
+}
+
+.section-task[data-priority="Low"]>.task-complete-button-container>.task-complete-button {
+    color: var(--low-priority-color);
+}
+
+.section-task[data-priority="Medium"]>.task-complete-button-container>.task-complete-button {
+    color: var(--medium-priority-color);
+}
+
+.section-task[data-priority="High"]>.task-complete-button-container>.task-complete-button {
+    color: var(--high-priority-color);
+}
+
+.section-task[data-priority="Highest"]>.task-complete-button-container>.task-complete-button {
+    color: var(--highest-priority-color);
 }
 
 .section-task>.task-content {

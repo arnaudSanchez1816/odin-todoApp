@@ -35,10 +35,11 @@ class TaskView {
     #createDom() {
         const taskView = document.createElement("div");
         taskView.classList.add("section-task");
-        const completeButton = this.#createCompleteButtonMarkup();
 
+        const completeButton = this.#createCompleteButtonMarkup();
         const taskContent = this.#createContentMarkup();
         const editButton = this.#createEditButtonMarkup();
+        this.#setPriorityDataAttribute(taskView, this.#task);
 
         taskView.appendChild(completeButton);
         taskView.appendChild(taskContent);
@@ -101,19 +102,25 @@ class TaskView {
         const circleIcon = createIconifyIcon(Icons.Circle);
         const checkIcon = createIconifyIcon(Icons.Check);
         checkIcon.classList.add("task-complete-check");
+        checkIcon.classList.toggle("done", task.done);
 
         button.appendChild(circleIcon);
         button.appendChild(checkIcon);
         container.appendChild(button);
 
         const listener = function() {
-            console.log("Complete task !");
-            console.log(this);
             this.#task.done = !this.#task.done;
+
+            todoData.saveChanges();
         }.bind(this);
 
         const onCompleteListener = createDomEventListener(button, "click", listener);
         this.#listeners.push(onCompleteListener);
+        
+        this.#dataElements.completeButton = {
+            button : button,
+            check : checkIcon
+        };
 
         return container;
     }
@@ -170,7 +177,16 @@ class TaskView {
             this.#dataElements.date.text.textContent = "";
         }
         this.#dataElements.date.span.classList.toggle("invisible", hasDueDate === false);
+
+        const completeCheck = this.#dataElements.completeButton.check;
+        completeCheck.classList.toggle("done", task.done);
+
+        this.#setPriorityDataAttribute(this.#domElement, task);
     };
+
+    #setPriorityDataAttribute(domElement, task) {
+        domElement.dataset.priority = task.priority.name;
+    }
 }
 
 export default TaskView;

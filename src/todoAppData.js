@@ -2,6 +2,7 @@ import TodoProject from "./todoProject";
 import { addDays } from "date-fns";
 import EventEmitter from "events";
 import { loadProjects, saveProjects } from "./todoAppSerializer";
+import Priorities from "./todoPriorities";
 
 const PROJECT_CREATED_EVENT = "projectCreated";
 
@@ -19,8 +20,8 @@ function createDemoProject() {
     const codingSection = demoProject.addSection("Coding");
     const workoutSection = demoProject.addSection("Workout");
 
-    const todoAppTask = codingSection.addTask("Todo app", "Finish the todo app project");
-    const odinTask = codingSection.addTask("Odin", "Continue odin project course");
+    const todoAppTask = codingSection.addTask("Todo app", "Finish the todo app project", null, Priorities.Highest);
+    const odinTask = codingSection.addTask("Odin", "Continue odin project course", null, Priorities.Medium);
 
     const workoutTask = workoutSection.addTask("Go back to the gym");
     let workoutDueDate = new Date(Date.now());
