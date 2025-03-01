@@ -29,17 +29,18 @@ class ProjectView {
     }
 
     dispose() {
-        this.#listeners.forEach((listener) => listener.dispose());
-
         this.#project.removeSectionAddedListener(this.#onProjectSectionAdded);
         this.#project.removeSectionRemovedListener(this.#onProjectSectionRemoved);
         this.#project.removeProjectChangedListener(this.#onProjectChanged);
+
         this.#sectionViews.forEach((sectionView) => sectionView.dispose());
+        this.#listeners.forEach((listener) => listener.dispose());
 
         this.#listeners = null;
         this.#sectionViews = null;
         this.#project = null;
         this.#domElement = null;
+        this.#sectionsDomContainer = null;
     }
 
     #createDom(project) {
@@ -134,13 +135,13 @@ class ProjectView {
     }
 
     #removeSectionView(section) {
-        const sectionViewIndex = this.#sectionViews.indexOf((view) => view.section === section);
+        const sectionViewIndex = this.#sectionViews.findIndex((view) => view.section === section);
         if (sectionViewIndex >= 0) {
             const sectionView = this.#sectionViews[sectionViewIndex];
-            sectionView.dispose();
 
             this.#sectionViews.splice(sectionViewIndex, 1);
             this.#sectionsDomContainer.removeChild(sectionView.domElement);
+            sectionView.dispose();
         }
     }
 

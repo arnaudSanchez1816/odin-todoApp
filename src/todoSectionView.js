@@ -1,7 +1,7 @@
 import createDomEventListener from "./domEventListener";
 import { createIconButton, Icons } from "./todoAppComponents";
 import todoData from "./todoAppData";
-import { CreateTaskModal } from "./todoOverlayModal";
+import { CreateTaskModal, EditSectionModal } from "./todoOverlayModal";
 import TodoSection from "./todoSection";
 import TodoTask from "./todoTask";
 import TaskView from "./todoTaskView";
@@ -12,6 +12,7 @@ class SectionView {
     #tasksDomContainer;
     #taskViews;
     #listeners;
+    #dataDomElements;
 
     /**
      * 
@@ -21,10 +22,17 @@ class SectionView {
         this.#section = section;
         this.#listeners = [];
         this.#taskViews = [];
+        this.#dataDomElements = {};
+
         this.#domElement = this.#createDom(section);
 
         this.#section.addTaskAddedListener(this.#onTaskAdded);
         this.#section.addTaskRemovedListener(this.#onTaskRemoved);
+        this.#section.addSectionChangedListener(this.#onSectionChanged);
+    }
+
+    get section() {
+        return this.#section;
     }
 
     get domElement() {
@@ -34,6 +42,7 @@ class SectionView {
     dispose() {
         this.#section.removeTaskAddedListener(this.#onTaskAdded);
         this.#section.removeTaskRemovedListener(this.#onTaskRemoved);
+        this.#section.removeSectionChangedListener(this.#onSectionChanged);
 
         this.#listeners.forEach((item) => item.dispose());
         this.#taskViews.forEach((view) => view.dispose());
@@ -42,6 +51,7 @@ class SectionView {
         this.#listeners = null;
         this.#section = null;
         this.#domElement = null;
+        this.#dataDomElements = null;
     }
 
     /**
@@ -66,6 +76,8 @@ class SectionView {
         sectionView.appendChild(tasks);
         sectionView.appendChild(addTaskButton);
 
+        this.#updateSectionDom(section);
+
         return sectionView;
     }
 
@@ -73,13 +85,13 @@ class SectionView {
         const header = document.createElement("header");
         header.classList = ["section-header"];
 
-        const sectionTItle = document.createElement("h2");
-        sectionTItle.classList = ["section-title"];
-        sectionTItle.textContent = section.title;
+        const sectionTitle = document.createElement("h2");
+        sectionTitle.classList = ["section-title"];
+        this.#dataDomElements.title = sectionTitle;
 
         const taskCountSpan = document.createElement("span");
-        taskCountSpan.textContent = section.tasksCount.toString();
         taskCountSpan.classList = ["section-tasks-count"];
+        this.#dataDomElements.taskCount = taskCountSpan;
 
         const editButton = createIconButton(Icons.Edit);
         editButton.classList.add("edit-button", "section");
@@ -87,7 +99,7 @@ class SectionView {
         const listener = createDomEventListener(editButton, "click", this.#editSectionCallback);
         this.#listeners.push(listener);
 
-        header.appendChild(sectionTItle);
+        header.appendChild(sectionTitle);
         header.appendChild(taskCountSpan);
         header.appendChild(editButton);
 
@@ -114,13 +126,13 @@ class SectionView {
     }
 
     #removeTaskView(task) {
-        const taskViewIndex = this.#taskViews.indexOf((view) => view.task === task);
+        const taskViewIndex = this.#taskViews.findIndex((view) => view.task === task);
         if (taskViewIndex >= 0) {
             const taskView = this.#taskViews[taskViewIndex];
-            taskView.dispose();
 
             this.#taskViews.splice(taskViewIndex, 1);
             this.#tasksDomContainer.removeChild(taskView.domElement);
+            taskView.dispose();
         }
     }
 
@@ -131,7 +143,20 @@ class SectionView {
     };
 
     #editSectionCallback = () => {
-        console.log("edit section");
+        const editSectionModal = new EditSectionModal(this.#section);
+
+        editSectionModal.sectionEdited(({title}) => {
+            this.#section.title = title;
+
+            todoData.saveChanges();
+        });
+
+        editSectionModal.sectionDeleted((section) => {
+            section.deleteSection();
+            todoData.saveChanges();
+        });
+
+        editSectionModal.show();
     };
 
     #onTaskCreatedCallback = ({ title, description, dueDate, priority }) => {
@@ -145,6 +170,8 @@ class SectionView {
      */
     #onTaskAdded = (task) => {
         this.#addTaskView(task);
+        // Update the section count dom element
+        this.#updateSectionDom(this.#section);
     };
 
     /**
@@ -153,7 +180,22 @@ class SectionView {
      */
     #onTaskRemoved = (task) => {
         this.#removeTaskView(task);
+        // Update the section count dom element
+        this.#updateSectionDom(this.#section);
     };
+
+    /**
+     * Called when the section data has changed.
+     * @param {TodoSection} section 
+     */
+    #onSectionChanged = (section) => {
+        this.#updateSectionDom(section);
+    };
+
+    #updateSectionDom(section) {
+        this.#dataDomElements.taskCount.textContent = section.tasksCount.toString();
+        this.#dataDomElements.title.textContent = section.title;
+    }
 }
 
 export default SectionView;

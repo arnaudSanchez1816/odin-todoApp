@@ -39,7 +39,7 @@ class TodoProject {
             throw new Error("Trying to create a section with an empty title");
         }
 
-        const section = new TodoSection(sectionTitle);
+        const section = new TodoSection(this, sectionTitle);
         this.#sections.push(section);
 
         this.#eventEmitter.emit(SECTION_ADDED_EVENT, section);

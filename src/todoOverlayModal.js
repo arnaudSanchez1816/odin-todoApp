@@ -652,7 +652,7 @@ class CreateSectionModal extends OverlayModal{
     createContent() {
         const form = document.createElement("form");
         form.id = this.#formId;
-        form.classList = ["add-task-form"];
+        form.classList = ["add-section-form"];
 
         const titleItem = this.#createTitleFormItem();
 
@@ -729,4 +729,126 @@ class CreateSectionModal extends OverlayModal{
     }
 }
 
-export { CreateProjectModal, EditProjectModal, CreateTaskModal, EditTaskModal, CreateSectionModal };
+class EditSectionModal extends OverlayModal{
+    #formId = "edit-section-form";
+    #section;
+    #sectionEditedCallback;
+    #sectionDeletedCallback;
+    #eventListeners;
+
+    constructor(section) {
+        super("Edit section");
+        this.#section = section;
+        this.#eventListeners = [];
+    }
+
+    hide() {
+        super.hide();
+        this.#eventListeners.forEach((item) => item.dispose());
+        this.#eventListeners = [];
+    }
+
+    createContent() {
+        const form = document.createElement("form");
+        form.id = this.#formId;
+        form.classList = ["edit-section-form"];
+
+        const titleItem = this.#createTitleFormItem();
+
+        form.appendChild(titleItem);
+
+        const eventListener = createDomEventListener(form, "submit", this.#onEditSectionFormSubmitted.bind(this));
+        this.#eventListeners.push(eventListener);
+
+        return form;
+    }
+
+    #createFormItemContainer() {
+        const item = document.createElement("div");
+        item.classList = ["form-item"];
+
+        return item;
+    }
+
+    #createTitleFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const titleLabel = document.createElement("label");
+        titleLabel.htmlFor = "edit-section-form-title";
+        titleLabel.textContent = "Name";
+        const titleInput = document.createElement("input");
+        titleInput.type = "text";
+        titleInput.name = "section-title";
+        titleInput.id = titleLabel.htmlFor;
+        titleInput.maxLength = 120;
+        titleInput.required = true;
+        titleInput.value = this.#section.title;
+
+        item.appendChild(titleLabel);
+        item.appendChild(titleInput);
+
+        return item;
+    }
+
+    createFooter() {
+        const container = document.createElement("div");
+        container.classList = "form-controls";
+
+        const submitButton = document.createElement("button");
+        submitButton.textContent = "Edit";
+        submitButton.type = "submit";
+        submitButton.classList.add("form-submit-button");
+        submitButton.setAttribute("form", this.#formId);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.type = "button";
+        deleteButton.classList.add("delete-button");
+
+        const eventListener = createDomEventListener(deleteButton, "click", this.#onDeleteSection);
+        this.#eventListeners.push(eventListener);
+
+        container.appendChild(deleteButton);
+        container.appendChild(submitButton);
+
+        return container;
+    }
+
+    sectionEdited(callback) {
+        this.#sectionEditedCallback = callback;
+    }
+
+    sectionDeleted(callback) {
+        this.#sectionDeletedCallback = callback;
+    }
+
+    /**
+     * 
+     * @param {Event} event 
+     */
+    #onEditSectionFormSubmitted(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const sectionEditedData = {
+            title : formData.get("section-title").valueOf(),
+        };
+
+        if(this.#sectionEditedCallback) {
+            this.#sectionEditedCallback(sectionEditedData);
+        }
+
+        this.hide();
+    }
+
+    #onDeleteSection = () => {
+        if(this.#sectionDeletedCallback) {
+            this.#sectionDeletedCallback(this.#section);
+        }
+
+        this.hide();
+    };
+}
+
+export { CreateProjectModal, EditProjectModal, CreateTaskModal, EditTaskModal, CreateSectionModal, EditSectionModal };

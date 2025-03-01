@@ -2,15 +2,18 @@ import Priorities from "./todoPriorities";
 import TodoTask from "./todoTask";
 import EventEmitter from "events";
 
+const SECTION_CHANGED_EVENT = "sectionChanged";
 const TASK_ADDED_EVENT = "taskAdded";
 const TASK_REMOVED_EVENT = "taskRemoved";
 
 class TodoSection {
+    #ownerProject;
     #title;
     #tasks = [];
     #eventEmitter;
 
-    constructor(title) {
+    constructor(project, title) {
+        this.#ownerProject = project;
         this.#title = title;
         this.#eventEmitter = new EventEmitter();
     }
@@ -19,8 +22,23 @@ class TodoSection {
         return this.#title;
     }
 
+    set title(newTitle) {
+        if (typeof newTitle !== 'string'
+            && (newTitle instanceof String) == false
+            && newTitle != null) {
+                throw new Error("Only strings and null values accepted");
+        }
+
+        this.#title = newTitle;
+        this.#eventEmitter.emit(SECTION_CHANGED_EVENT, this);
+    }
+
     get tasksCount() {
         return this.#tasks.length;
+    }
+
+    deleteSection() {
+        this.#ownerProject.removeSection(this);
     }
 
     #addTask(todoTask) {
@@ -46,6 +64,14 @@ class TodoSection {
 
     get tasks() {
         return [...this.#tasks];
+    }
+
+    addSectionChangedListener(callback) {
+        this.#eventEmitter.addListener(SECTION_CHANGED_EVENT, callback);
+    }
+
+    removeSectionChangedListener(callback) {
+        this.#eventEmitter.removeListener(SECTION_CHANGED_EVENT, callback);
     }
 
     addTaskAddedListener(callback) {

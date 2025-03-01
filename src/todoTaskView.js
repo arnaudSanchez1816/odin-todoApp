@@ -149,11 +149,7 @@ class TaskView {
             });
             editTaskModal.taskDeleted((task) => {
                 task.deleteTask();
-                this.#domElement.remove();
-                if(this.dispose) {
-                    this.dispose();
-                }
-
+                
                 todoData.saveChanges();
             });
 
