@@ -13,6 +13,8 @@ function initApp() {
     }
 
     init = true;
+
+    todoData.loadData();
     const projects = todoData.getProjects();
     sidebar.initSidebar(onSidebarAddProject, onSidebarProjectSelected);
 
@@ -59,6 +61,8 @@ function onSidebarAddProject() {
     addProjectModal.projectCreated(({ title }) => {
         const project = todoData.addProject(title);
         displayProject(project);
+
+        todoData.saveChanges();
     });
 
     addProjectModal.show();

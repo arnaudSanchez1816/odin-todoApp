@@ -22,7 +22,7 @@ class TodoProject {
     }
 
     set title(newTitle) {
-        if((typeof newTitle === "string") === false) {
+        if ((typeof newTitle === "string") === false) {
             throw new Error("Only string values valid.");
         }
 
@@ -34,13 +34,17 @@ class TodoProject {
         return this.#id;
     }
 
+    #addSection(section) {
+        this.#sections.push(section);
+    }
+
     addSection(sectionTitle) {
-        if(sectionTitle == false) {
+        if (sectionTitle == false) {
             throw new Error("Trying to create a section with an empty title");
         }
 
         const section = new TodoSection(this, sectionTitle);
-        this.#sections.push(section);
+        this.#addSection(section);
 
         this.#eventEmitter.emit(SECTION_ADDED_EVENT, section);
 
@@ -48,12 +52,12 @@ class TodoProject {
     }
 
     removeSection(section) {
-        if(section == false) {
+        if (section == false) {
             return;
         }
 
         const index = this.#sections.indexOf(section);
-        if(index >= 0) {
+        if (index >= 0) {
             this.#sections.splice(index, 1);
             this.#eventEmitter.emit(SECTION_REMOVED_EVENT, section);
         }
@@ -61,6 +65,27 @@ class TodoProject {
 
     get sections() {
         return [...this.#sections];
+    }
+
+    toJson() {
+        return {
+            id: this.#id,
+            title: this.#title,
+            sections: this.#sections.map((section) => section.toJson())
+        };
+    }
+
+    fromJson(jsonData) {
+        this.#id = jsonData.id;
+        this.#title = jsonData.title;
+        const sections = jsonData.sections;
+        if(sections && Array.isArray(sections)) {
+            sections.forEach((item) => {
+                const section = new TodoSection(this);
+                section.fromJson(item);
+                this.#addSection(section);
+            });
+        }
     }
 
     addProjectChangedListener(func) {

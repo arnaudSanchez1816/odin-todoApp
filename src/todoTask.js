@@ -16,14 +16,14 @@ class TodoTask {
     #done;
     #taskChangedEmitter;
 
-    constructor(section, title, description = null, date = null, priority = Priorities.Normal) {
+    constructor(section, title, description, date, priority) {
         this.#taskChangedEmitter = new EventEmitter();
 
         this.#ownerSection = section;
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.priority = priority;
+        this.title = title || "";
+        this.description = description || "";
+        this.date = date || null;
+        this.priority = priority || Priorities.Lowest;
         this.done = false;
     }
 
@@ -35,7 +35,7 @@ class TodoTask {
         if (typeof newTitle !== 'string'
             && (newTitle instanceof String) == false
             && newTitle != null) {
-                throw new Error("Only strings and null values accepted");
+            throw new Error("Only strings and null values accepted");
         }
 
         this.#title = newTitle;
@@ -50,7 +50,7 @@ class TodoTask {
         if (typeof newDescription !== 'string'
             && (newDescription instanceof String) == false
             && newDescription != null) {
-                throw new Error("Only strings and null values accepted");
+            throw new Error("Only strings and null values accepted");
         }
 
         this.#description = newDescription;
@@ -75,7 +75,7 @@ class TodoTask {
     }
 
     set priority(newPrio) {
-        if(Priorities.exists(newPrio) === false) {
+        if (Priorities.exists(newPrio) === false) {
             throw new Error("Only accept valid Priorities values.")
         }
 
@@ -88,7 +88,7 @@ class TodoTask {
     }
 
     set done(value) {
-        if((typeof value === "boolean") === false) {
+        if ((typeof value === "boolean") === false) {
             throw new Error("Only bool values accepted");
         }
 
@@ -98,6 +98,24 @@ class TodoTask {
 
     get done() {
         return this.#done;
+    }
+
+    toJson() {
+        return {
+            title: this.#title,
+            description: this.#description,
+            dueDate: this.#date,
+            priority: this.#priority,
+            done: this.#done
+        };
+    }
+
+    fromJson(jsonData) {
+        this.#title = jsonData.title;
+        this.#description = jsonData.description;
+        this.#date = jsonData.dueDate;
+        this.#priority = jsonData.priority;
+        this.#done = jsonData.done;
     }
 
     addTaskChangedListener(func) {

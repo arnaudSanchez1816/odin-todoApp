@@ -7,12 +7,22 @@ import Priorities from "./todoPriorities";
 const PROJECT_CREATED_EVENT = "projectCreated";
 const PROJECT_DELETED_EVENT = "projectDeleted";
 
-const projects = loadProjects();
+const projects = [];
 const appEvents = new EventEmitter();
 
-if(projects.length === 0) {
-    const demoProject = createDemoProject();
-    projects.push(demoProject);
+function loadData() {
+    try {
+        const projectsLoaded = loadProjects();
+        if (projectsLoaded.length === 0) {
+            const demoProject = createDemoProject();
+            projects.push(demoProject);
+        }
+        else {
+            projectsLoaded.forEach((item) => projects.push(item));
+        }
+    } catch (error) {
+        console.error("Failed to load projects.\n" + error);
+    }
 }
 
 function createDemoProject() {
@@ -49,7 +59,7 @@ function addProject(title) {
 
 function deleteProject(projectToDelete) {
     const index = projects.indexOf(projectToDelete);
-    if(index >= 0) {
+    if (index >= 0) {
         projects.splice(index, 1);
         appEvents.emit(PROJECT_DELETED_EVENT, projectToDelete);
     }
@@ -72,10 +82,15 @@ function removeProjectDeletedListener(func) {
 }
 
 function saveChanges() {
-
+    try {
+        saveProjects(projects);
+    } catch (error) {
+        console.error("Failed to save projects.\n" + error);
+    }
 }
 
 const todoData = {
+    loadData,
     getProjects,
     addProject,
     deleteProject,

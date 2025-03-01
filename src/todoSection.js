@@ -26,7 +26,7 @@ class TodoSection {
         if (typeof newTitle !== 'string'
             && (newTitle instanceof String) == false
             && newTitle != null) {
-                throw new Error("Only strings and null values accepted");
+            throw new Error("Only strings and null values accepted");
         }
 
         this.#title = newTitle;
@@ -56,7 +56,7 @@ class TodoSection {
 
     removeTask(todoTask) {
         const index = this.#tasks.indexOf(todoTask);
-        if(index >= 0) {
+        if (index >= 0) {
             this.#tasks.splice(index, 1);
             this.#eventEmitter.emit(TASK_REMOVED_EVENT, todoTask);
         }
@@ -64,6 +64,25 @@ class TodoSection {
 
     get tasks() {
         return [...this.#tasks];
+    }
+
+    toJson() {
+        return {
+            title: this.#title,
+            tasks: this.#tasks.map((task) => task.toJson())
+        };
+    }
+
+    fromJson(jsonData) {
+        this.#title = jsonData.title;
+        const tasks = jsonData.tasks;
+        if(tasks && Array.isArray(tasks)) {
+            tasks.forEach((item) => {
+                const task = new TodoTask(this);
+                task.fromJson(item);
+                this.#addTask(task);
+            });
+        }
     }
 
     addSectionChangedListener(callback) {
