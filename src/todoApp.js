@@ -18,12 +18,25 @@ function initApp() {
 
     const initialProject = projects.length > 0 ? projects[0] : null;
     displayProject(initialProject);
+
+    todoData.addProjectDeletedListener(onProjectDeleted);
 }
 
 function displayProject(project) {
+    if(project === null) {
+        setEmptyContent();
+        return;
+    }
+
     const projectView = new ProjectView(project);
     setContent(projectView);
     sidebar.setActiveProject(project);
+}
+
+function setEmptyContent() {
+    const emptyPage = document.createElement("div");
+    setContent({domElement: emptyPage});
+    sidebar.setActiveProject(null);
 }
 
 function setContent(contentToDisplay) {
@@ -53,6 +66,18 @@ function onSidebarAddProject() {
 
 function onSidebarProjectSelected(project) {
     displayProject(project);
+}
+
+function onProjectDeleted(project) {
+    if(currentContent instanceof ProjectView && currentContent.project === project) {
+        const projects = todoData.getProjects();
+        if(projects.length > 0) {
+            displayProject(projects[0]);
+        }
+        else {
+            setEmptyContent();
+        }
+    }
 }
 
 const todoApp = {

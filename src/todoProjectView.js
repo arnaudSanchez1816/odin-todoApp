@@ -24,6 +24,10 @@ class ProjectView {
         this.#project.addSectionRemovedListener(this.#onProjectSectionRemoved);
     }
 
+    get project() {
+        return this.#project;
+    }
+
     get domElement() {
         return this.#domElement;
     }
@@ -173,6 +177,12 @@ class ProjectView {
         const editProjectModal = new EditProjectModal(project);
         editProjectModal.projectEdited(({ title }) => {
             project.title = title;
+
+            todoData.saveChanges();
+        });
+
+        editProjectModal.projectDeleted((project) => {
+            todoData.deleteProject(project);
 
             todoData.saveChanges();
         });

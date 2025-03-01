@@ -132,9 +132,15 @@ function initSidebar(addProjectCb, projectSelectedCb) {
     const projects = todoData.getProjects();
     buildProjectsList(projects);
     todoData.addProjectCreatedListener(onProjectCreated);
+    todoData.addProjectDeletedListener(onProjectDeleted);
 }
 
 function onProjectCreated(project) {
+    const projects = todoData.getProjects();
+    buildProjectsList(projects);
+}
+
+function onProjectDeleted(project) {
     const projects = todoData.getProjects();
     buildProjectsList(projects);
 }

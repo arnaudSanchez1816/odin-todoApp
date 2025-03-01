@@ -178,6 +178,7 @@ class CreateProjectModal extends OverlayModal {
 class EditProjectModal extends OverlayModal{
     #formId = "edit-project-form";
     #projectEditedCallback;
+    #projectDeletedCallback;
     #project;
 
     /**
@@ -214,7 +215,6 @@ class EditProjectModal extends OverlayModal{
         const formSubmittedCb = (event) => {
             form.removeEventListener("submit", formSubmittedCb);
             this.#onEditProjectFormSubmitted(event);
-            this.hide();
         };
         form.addEventListener("submit", formSubmittedCb);
 
@@ -231,6 +231,13 @@ class EditProjectModal extends OverlayModal{
         submitButton.classList.add("form-submit-button");
         submitButton.setAttribute("form", this.#formId);
 
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.type = "button";
+        deleteButton.classList.add("delete-button");
+        deleteButton.addEventListener("click", this.#onDeleteProjectClicked);
+
+        container.appendChild(deleteButton);
         container.appendChild(submitButton);
 
         return container;
@@ -242,6 +249,10 @@ class EditProjectModal extends OverlayModal{
      */
     projectEdited(callback) {
         this.#projectEditedCallback = callback;
+    }
+
+    projectDeleted(callback) {
+        this.#projectDeletedCallback = callback;
     }
 
     /**
@@ -260,7 +271,17 @@ class EditProjectModal extends OverlayModal{
         if(this.#projectEditedCallback) {
             this.#projectEditedCallback(projectEditedData);
         }
+
+        this.hide();
     }
+
+    #onDeleteProjectClicked = () => {
+        if(this.#projectDeletedCallback) {
+            this.#projectDeletedCallback(this.#project);
+        }
+
+        this.hide();
+    };
 }
 
 class EditTaskModal extends OverlayModal{

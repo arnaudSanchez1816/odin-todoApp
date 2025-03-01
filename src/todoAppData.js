@@ -5,6 +5,7 @@ import { loadProjects, saveProjects } from "./todoAppSerializer";
 import Priorities from "./todoPriorities";
 
 const PROJECT_CREATED_EVENT = "projectCreated";
+const PROJECT_DELETED_EVENT = "projectDeleted";
 
 const projects = loadProjects();
 const appEvents = new EventEmitter();
@@ -45,12 +46,28 @@ function addProject(title) {
     return project;
 }
 
+function deleteProject(projectToDelete) {
+    const index = projects.indexOf(projectToDelete);
+    if(index >= 0) {
+        projects.splice(index, 1);
+        appEvents.emit(PROJECT_DELETED_EVENT, projectToDelete);
+    }
+}
+
 function addProjectCreatedListener(func) {
     appEvents.on(PROJECT_CREATED_EVENT, func);
 }
 
 function removeProjectCreatedListener(func) {
     appEvents.removeListener(PROJECT_CREATED_EVENT, func);
+}
+
+function addProjectDeletedListener(func) {
+    appEvents.on(PROJECT_DELETED_EVENT, func);
+}
+
+function removeProjectDeletedListener(func) {
+    appEvents.removeListener(PROJECT_DELETED_EVENT, func);
 }
 
 function saveChanges() {
@@ -60,8 +77,11 @@ function saveChanges() {
 const todoData = {
     getProjects,
     addProject,
+    deleteProject,
     addProjectCreatedListener,
     removeProjectCreatedListener,
+    addProjectDeletedListener,
+    removeProjectDeletedListener,
     saveChanges
 };
 
