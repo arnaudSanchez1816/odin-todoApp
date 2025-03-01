@@ -13,6 +13,7 @@
             <div class="sidebar-content">
                 <span class="sidebar-title">Todo App</span>
                 <nav class="sidebar-nav">
+                    <!--
                     <ul class="sidebar-nav-controls">
                         <li>
                             <button id="nav-add-task" class="sidebar-button"
@@ -45,6 +46,7 @@
                             </button>
                         </li>
                     </ul>
+                    -->
                     <div class="sidebar-nav-projects">
                         <div class="sidebar-nav-projects-title">
                             <span>Projects</span>
@@ -57,25 +59,6 @@
                             </button>
                         </div>
                         <ul id="sidebar-nav-projects-list">
-                            <li date-project-id="">
-                                <button class="sidebar-button selected"
-                                    type="button">
-                                    <span class="ic-wrapper">
-                                        <iconify-icon class="ic-icon"
-                                            icon="ph:hash"></iconify-icon>
-                                    </span>
-                                    <span>Home 🏡</span>
-                                </button>
-                            </li>
-                            <li>
-                                <button class="sidebar-button" type="button">
-                                    <span class="ic-wrapper">
-                                        <iconify-icon class="ic-icon"
-                                            icon="ph:hash"></iconify-icon>
-                                    </span>
-                                    <span>Project 2</span>
-                                </button>
-                            </li>
                         </ul>
                     </div>
                 </nav>
@@ -91,170 +74,8 @@
             </div>
         </div>
         <main id="main-content">
-            <div class="main-content-project">
-                <header class="project-header">
-                    <button id="project-header-edit"
-                        class="ic-button edit-button" type="button">
-                        <span class="ic-wrapper">
-                            <iconify-icon class="ic-icon"
-                                icon="material-symbols:edit-square-outline"></iconify-icon>
-                        </span>
-                        <span class="project-header-edit-text">Edit</span>
-                    </button>
-                </header>
-                <div class="project-content">
-                    <div class="project-title-container">
-                        <div class="project-title-edit" contenteditable="true">
-                            <h1 class="project-title">Home 🏡</h1>
-                        </div>
-                    </div>
-                    <div class="project-sections">
-                        <section class="project-section">
-                            <header class="section-header">
-                                <h2 class="section-title">Section</h2>
-                                <span class="section-tasks-count">12</span>
-                                <button class="ic-button edit-button section"
-                                    type="button">
-                                    <span class="ic-wrapper">
-                                        <iconify-icon class="ic-icon"
-                                            icon="material-symbols:edit-square-outline"></iconify-icon>
-                                    </span>
-                                </button>
-                            </header>
-                            <div class="section-tasks">
-                                <div class="section-task">
-                                    <div class="task-complete-button-container">
-                                        <button class="task-complete-button"
-                                            type="button">
-                                            <span class="ic-wrapper">
-                                                <iconify-icon class="ic-icon"
-                                                    icon="material-symbols:circle-outline">
-                                                </iconify-icon>
-                                            </span>
-                                            <span class="ic-wrapper">
-                                                <iconify-icon
-                                                    class="ic-icon task-complete-check"
-                                                    icon="material-symbols:check-rounded">
-                                                </iconify-icon>
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <div class="task-content">
-                                        <span class="task-title">Title</span>
-                                        <span
-                                            class="task-description">Description</span>
-                                        <span class="task-date">
-                                            <span class="ic-wrapper">
-                                                <iconify-icon
-                                                    icon="mdi:calendar-blank-outline"></iconify-icon>
-                                            </span>
-                                            <span>Tomorrow</span>
-                                        </span>
-                                    </div>
-                                    <div class="task-edit-container">
-                                        <button
-                                            class="ic-button edit-button task"
-                                            type="button">
-                                            <span class="ic-wrapper">
-                                                <iconify-icon class="ic-icon"
-                                                    icon="material-symbols:edit-square-outline"></iconify-icon>
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="section-task">
-                                    <div class="task-complete-button-container">
-                                        <button class="task-complete-button"
-                                            type="button">
-                                            <span class="ic-wrapper">
-                                                <iconify-icon class="ic-icon"
-                                                    icon="material-symbols:circle-outline">
-                                                </iconify-icon>
-                                            </span>
-                                            <span class="ic-wrapper">
-                                                <iconify-icon
-                                                    class="ic-icon task-complete-check"
-                                                    icon="material-symbols:check-rounded">
-                                                </iconify-icon>
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <div class="task-content">
-                                        <span class="task-title">Title</span>
-                                        <span
-                                            class="task-description">Description</span>
-                                        <span class="task-date">
-                                            <span class="ic-wrapper">
-                                                <iconify-icon
-                                                    icon="mdi:calendar-blank-outline"></iconify-icon>
-                                            </span>
-                                            <span>Tomorrow</span>
-                                        </span>
-                                    </div>
-                                    <div class="task-edit-container">
-                                        <button
-                                            class="ic-button edit-button task"
-                                            type="button">
-                                            <span class="ic-wrapper">
-                                                <iconify-icon class="ic-icon"
-                                                    icon="material-symbols:edit-square-outline"></iconify-icon>
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="section-add-task" type="button">
-                                <span class="ic-wrapper">
-                                    <iconify-icon class="ic-icon"
-                                        icon="ic:baseline-plus"></iconify-icon>
-                                </span>
-                                <span>Add task</span>
-                            </button>
-                        </section>
-                        <div class="project-add-section-container">
-                            <button id="project-add-section" class="ic-button"
-                                type="button">
-                                <span class="ic-wrapper">
-                                    <iconify-icon class="ic-icon"
-                                        icon="ic:baseline-plus"></iconify-icon>
-                                </span>
-                                <span>Add section</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </main>
     </div>
-    <!--
-    
-    <div class="overlay add-project">
-        <div class="overlay-modal">
-            <header class="overlay-header">
-                <span class="overlay-title">Overlay title</span>
-                <button class="ic-button overlay-close-button" type="button">
-                    <span class="ic-wrapper">
-                        <iconify-icon class="ic-icon"
-                            icon="material-symbols:close">
-                        </iconify-icon>
-                    </span>
-                </button>
-            </header>
-            <div class="overlay-content">
-                <form class="add-project-form" id="add-project-form" action="">
-                    <div class="form-item">
-                        <label for="add-form-project-title">Title</label>
-                        <input type="text" name="project-title" id="add-form-project-title" maxlength="120">
-                    </div>
-                </form>
-            </div>
-            <footer class="overlay-footer">
-                <button form="add-project-form" class="form-submit-button" type="submit">Add</button>
-            </footer>
-        </div>
-    </div>
-
--->
 
 </body>
 
