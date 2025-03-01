@@ -22,9 +22,10 @@ function createDemoProject() {
     const workoutSection = demoProject.addSection("Workout");
 
     const todoAppTask = codingSection.addTask("Todo app", "Finish the todo app project", null, Priorities.Highest);
-    const odinTask = codingSection.addTask("Odin", "Continue odin project course", null, Priorities.Medium);
+    todoAppTask.done = true;
+    const odinTask = codingSection.addTask("Odin", "Continue the odin project course", null, Priorities.Medium);
 
-    const workoutTask = workoutSection.addTask("Go back to the gym");
+    const workoutTask = workoutSection.addTask("Leg day");
     let workoutDueDate = new Date(Date.now());
     workoutDueDate = addDays(workoutDueDate, 3);
     workoutTask.date = workoutDueDate;
