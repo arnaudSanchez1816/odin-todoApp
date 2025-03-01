@@ -463,14 +463,12 @@ class EditTaskModal extends OverlayModal{
 
 class CreateTaskModal extends OverlayModal{
     #formId = "add-task-form";
-    #task;
     #taskCreatedCallback;
     #eventListeners;
 
-    constructor(task) {
+    constructor() {
         super("Add task");
         this.#eventListeners = [];
-        this.#task = task;
     }
 
     hide() {
@@ -635,4 +633,100 @@ class CreateTaskModal extends OverlayModal{
     }
 }
 
-export { CreateProjectModal, EditProjectModal, CreateTaskModal, EditTaskModal };
+class CreateSectionModal extends OverlayModal{
+    #formId = "add-section-form";
+    #sectionCreatedCallback;
+    #eventListeners;
+
+    constructor() {
+        super("Add section");
+        this.#eventListeners = [];
+    }
+
+    hide() {
+        super.hide();
+        this.#eventListeners.forEach((item) => item.dispose());
+        this.#eventListeners = [];
+    }
+
+    createContent() {
+        const form = document.createElement("form");
+        form.id = this.#formId;
+        form.classList = ["add-task-form"];
+
+        const titleItem = this.#createTitleFormItem();
+
+        form.appendChild(titleItem);
+
+        const eventListener = createDomEventListener(form, "submit", this.#onAddSectionFormSubmitted.bind(this));
+        this.#eventListeners.push(eventListener);
+
+        return form;
+    }
+
+    #createFormItemContainer() {
+        const item = document.createElement("div");
+        item.classList = ["form-item"];
+
+        return item;
+    }
+
+    #createTitleFormItem() {
+        const item = this.#createFormItemContainer();
+
+        const titleLabel = document.createElement("label");
+        titleLabel.htmlFor = "add-section-form-title";
+        titleLabel.textContent = "Name";
+        const titleInput = document.createElement("input");
+        titleInput.type = "text";
+        titleInput.name = "section-title";
+        titleInput.id = titleLabel.htmlFor;
+        titleInput.maxLength = 120;
+        titleInput.required = true;
+        item.appendChild(titleLabel);
+        item.appendChild(titleInput);
+
+        return item;
+    }
+
+    createFooter() {
+        const container = document.createElement("div");
+        container.classList = "form-controls";
+
+        const submitButton = document.createElement("button");
+        submitButton.textContent = "Add";
+        submitButton.type = "submit";
+        submitButton.classList.add("form-submit-button");
+        submitButton.setAttribute("form", this.#formId);
+
+        container.appendChild(submitButton);
+
+        return container;
+    }
+
+    sectionCreated(callback) {
+        this.#sectionCreatedCallback = callback;
+    }
+
+    /**
+     * 
+     * @param {Event} event 
+     */
+    #onAddSectionFormSubmitted(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+
+        const sectionCreatedData = {
+            title : formData.get("section-title").valueOf(),
+        };
+
+        if(this.#sectionCreatedCallback) {
+            this.#sectionCreatedCallback(sectionCreatedData);
+        }
+
+        this.hide();
+    }
+}
+
+export { CreateProjectModal, EditProjectModal, CreateTaskModal, EditTaskModal, CreateSectionModal };

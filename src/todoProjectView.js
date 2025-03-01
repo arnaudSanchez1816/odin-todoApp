@@ -1,14 +1,16 @@
 import "./projectView.css"
 import { createIconButton, Icons } from "./todoAppComponents";
 import SectionView from "./todoSectionView";
-import { EditProjectModal } from "./todoOverlayModal";
+import { CreateSectionModal, EditProjectModal } from "./todoOverlayModal";
 import todoData from "./todoAppData";
 import createDomEventListener from "./domEventListener";
+import TodoSection from "./todoSection";
 
 class ProjectView {
     #project;
     #domElement;
     #sectionViews;
+    #sectionsDomContainer;
     #listeners;
 
     constructor(project) {
@@ -18,6 +20,8 @@ class ProjectView {
         this.#domElement = this.#createDom(project);
 
         this.#project.addProjectChangedListener(this.#onProjectChanged);
+        this.#project.addSectionAddedListener(this.#onProjectSectionAdded);
+        this.#project.addSectionRemovedListener(this.#onProjectSectionRemoved);
     }
 
     get domElement() {
@@ -27,6 +31,8 @@ class ProjectView {
     dispose() {
         this.#listeners.forEach((listener) => listener.dispose());
 
+        this.#project.removeSectionAddedListener(this.#onProjectSectionAdded);
+        this.#project.removeSectionRemovedListener(this.#onProjectSectionRemoved);
         this.#project.removeProjectChangedListener(this.#onProjectChanged);
         this.#sectionViews.forEach((sectionView) => sectionView.dispose());
 
@@ -93,36 +99,72 @@ class ProjectView {
     }
 
     #createProjectSections(project) {
+        const sectionsContainer = document.createElement("div");
+        sectionsContainer.classList = ["project-sections-container"];
+
         const sections = document.createElement("div");
         sections.classList = ["project-sections"];
+        this.#sectionsDomContainer = sections;
 
         for (const section of project.sections) {
-            const sectionView = new SectionView(section);
-
-            this.#sectionViews.push(sectionView);
-            sections.appendChild(sectionView.domElement);
+            this.#addSectionView(section);
         }
+        sectionsContainer.appendChild(sections);
 
-        // Add section button
+        // "Add section" button
         const addSectionButtonContainer = document.createElement("div");
         addSectionButtonContainer.classList = ["project-add-section-container"];
         const addSectionButton = createIconButton(Icons.Plus, "Add section");
         addSectionButton.id = "project-add-section";
-        
+
         const listener = createDomEventListener(addSectionButton, "click", this.#addSectionCallback);
         this.#listeners.push(listener);
 
         addSectionButtonContainer.appendChild(addSectionButton);
-        sections.appendChild(addSectionButtonContainer);
+        sectionsContainer.appendChild(addSectionButtonContainer);
 
-        return sections;
+        return sectionsContainer;
+    }
+
+    #addSectionView(section) {
+        const sectionView = new SectionView(section);
+
+        this.#sectionViews.push(sectionView);
+        this.#sectionsDomContainer.appendChild(sectionView.domElement);
+    }
+
+    #removeSectionView(section) {
+        const sectionViewIndex = this.#sectionViews.indexOf((view) => view.section === section);
+        if (sectionViewIndex >= 0) {
+            const sectionView = this.#sectionViews[sectionViewIndex];
+            sectionView.dispose();
+
+            this.#sectionViews.splice(sectionViewIndex, 1);
+            this.#sectionsDomContainer.removeChild(sectionView.domElement);
+        }
     }
 
     #onProjectChanged = () => {
         const projectTitle = this.#domElement.querySelector(".project-title");
-        if(projectTitle) {
+        if (projectTitle) {
             projectTitle.textContent = this.#project.title;
         }
+    };
+
+    /**
+     * Called when a section was added to the project.
+     * @param {TodoSection} section 
+     */
+    #onProjectSectionAdded = (section) => {
+        this.#addSectionView(section);
+    };
+
+    /**
+    * Called when a section was removed from the project.
+    * @param {TodoSection} section 
+    */
+    #onProjectSectionRemoved = (section) => {
+        this.#removeSectionView(section);
     };
 
     #editProjectCallback = () => {
@@ -137,7 +179,13 @@ class ProjectView {
     };
 
     #addSectionCallback = () => {
-        console.log("add section click !");
+        const createSectionModal = new CreateSectionModal();
+        createSectionModal.sectionCreated(({ title }) => {
+            this.#project.addSection(title);
+
+            todoData.saveChanges();
+        });
+        createSectionModal.show();
     };
 }
 

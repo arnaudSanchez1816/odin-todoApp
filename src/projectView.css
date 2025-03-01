@@ -43,13 +43,11 @@
     }
 }
 
-.main-content-project>.project-content>.project-sections {
-    padding: 0px calc(var(--main-side-padding) - 8px) 8px;
+.main-content-project>.project-content>.project-sections-container {
     display: flex;
     flex-flow: row nowrap;
-    overflow-x: auto;
-    overscroll-behavior-x: none;
     width: 100%;
+    padding: 0px calc(var(--main-side-padding) - 8px) 8px;
 
     >.project-add-section-container {
         flex-shrink: 0;
@@ -77,6 +75,11 @@
             }
         }
     }
+}
+
+.project-sections-container>.project-sections {
+    display: flex;
+    flex-flow: row nowrap;
 }
 
 /* Section */

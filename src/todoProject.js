@@ -2,18 +2,19 @@ import TodoSection from "./todoSection";
 import EventEmitter from "events";
 
 const PROJECT_CHANGED_EVENT = "projectChanged";
-const PROJECT_DELETED_EVENT = "projectDeleted";
+const SECTION_ADDED_EVENT = "projectSectionAdded";
+const SECTION_REMOVED_EVENT = "projectSectionRemoved";
 
 class TodoProject {
     #id;
     #title;
     #sections = [];
-    eventEmitter;
+    #eventEmitter;
 
     constructor(title) {
         this.#id = self.crypto.randomUUID();
         this.#title = title;
-        this.eventEmitter = new EventEmitter();
+        this.#eventEmitter = new EventEmitter();
     }
 
     get title() {
@@ -26,15 +27,11 @@ class TodoProject {
         }
 
         this.#title = newTitle;
-        this.eventEmitter.emit(PROJECT_CHANGED_EVENT, this);
+        this.#eventEmitter.emit(PROJECT_CHANGED_EVENT, this);
     }
 
     get id() {
         return this.#id;
-    }
-
-    deleteProject() {
-        this.eventEmitter.emit(PROJECT_DELETED_EVENT, this);
     }
 
     addSection(sectionTitle) {
@@ -45,6 +42,8 @@ class TodoProject {
         const section = new TodoSection(sectionTitle);
         this.#sections.push(section);
 
+        this.#eventEmitter.emit(SECTION_ADDED_EVENT, section);
+
         return section;
     }
 
@@ -53,7 +52,11 @@ class TodoProject {
             return;
         }
 
-        this.#sections = this.#sections.filter((item) => item !== section);
+        const index = this.#sections.indexOf(section);
+        if(index >= 0) {
+            this.#sections.splice(index, 1);
+            this.#eventEmitter.emit(SECTION_REMOVED_EVENT, section);
+        }
     }
 
     get sections() {
@@ -61,19 +64,27 @@ class TodoProject {
     }
 
     addProjectChangedListener(func) {
-        this.eventEmitter.on(PROJECT_CHANGED_EVENT, func);
+        this.#eventEmitter.on(PROJECT_CHANGED_EVENT, func);
     }
 
     removeProjectChangedListener(func) {
-        this.eventEmitter.removeListener(PROJECT_CHANGED_EVENT, func);
+        this.#eventEmitter.removeListener(PROJECT_CHANGED_EVENT, func);
     }
 
-    addProjectDeletedListener(func) {
-        this.eventEmitter.on(PROJECT_DELETED_EVENT, func);
+    addSectionAddedListener(func) {
+        this.#eventEmitter.on(SECTION_ADDED_EVENT, func);
     }
 
-    removeProjectDeletedListener(func) {
-        this.eventEmitter.on(PROJECT_DELETED_EVENT, func);
+    removeSectionAddedListener(func) {
+        this.#eventEmitter.removeListener(SECTION_ADDED_EVENT, func);
+    }
+
+    addSectionRemovedListener(func) {
+        this.#eventEmitter.on(SECTION_REMOVED_EVENT, func);
+    }
+
+    removeSectionRemovedListener(func) {
+        this.#eventEmitter.removeListener(SECTION_REMOVED_EVENT, func);
     }
 }
 
